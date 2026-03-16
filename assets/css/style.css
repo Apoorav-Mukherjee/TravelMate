@@ -1,0 +1,168 @@
+:root {
+    --primary: #0d6efd;
+    --sidebar-width: 250px;
+}
+
+body {
+    background: #f4f6fb;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+    width: var(--sidebar-width);
+    min-height: 100vh;
+    background: #1a1f3a;
+    position: fixed;
+    top: 0; left: 0;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.sidebar .brand {
+    padding: 20px;
+    color: #fff;
+    font-size: 1.4rem;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar .nav-link {
+    color: rgba(255,255,255,0.75);
+    padding: 10px 20px;
+    border-radius: 0;
+    transition: all 0.2s;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+    border-left: 3px solid var(--primary);
+}
+
+.sidebar .nav-link i {
+    margin-right: 8px;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: var(--sidebar-width);
+    padding: 20px;
+}
+
+/* Topbar */
+.topbar {
+    background: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Cards */
+.stat-card {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+}
+
+/* Auth Pages */
+.auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1a1f3a, #0d6efd);
+}
+
+.auth-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px;
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.auth-card .brand {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* Badges */
+.badge-pending   { background: #ffc107; color: #000; }
+.badge-confirmed { background: #198754; color: #fff; }
+.badge-cancelled { background: #dc3545; color: #fff; }
+.badge-completed { background: #0dcaf0; color: #000; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar      { display: none; }
+    .main-content { margin-left: 0; }
+}
+
+/* ─── Chat System ─────────────────────────────────────────── */
+.chat-bubble-mine {
+    background: #0d6efd;
+    color: #fff;
+    border-radius: 18px 18px 4px 18px;
+    padding: 10px 14px;
+    max-width: 65%;
+    word-break: break-word;
+}
+
+.chat-bubble-other {
+    background: #fff;
+    color: #212529;
+    border: 1px solid #dee2e6;
+    border-radius: 18px 18px 18px 4px;
+    padding: 10px 14px;
+    max-width: 65%;
+    word-break: break-word;
+}
+
+.chat-time {
+    font-size: 10px;
+    opacity: 0.7;
+}
+
+.chat-read-receipt {
+    font-size: 11px;
+    color: #90caf9;
+}
+
+/* Typing indicator dots */
+.typing-dots span {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #6c757d;
+    margin: 0 2px;
+    animation: typingBounce 1.2s infinite ease-in-out;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40%           { transform: scale(1.0); opacity: 1.0; }
+}
+
+/* Notification pulse */
+@keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(220,53,69,0.5); }
+    70%  { box-shadow: 0 0 0 8px rgba(220,53,69,0);  }
+    100% { box-shadow: 0 0 0 0 rgba(220,53,69,0);    }
+}
+#msgBadge { animation: pulse 2s infinite; }

@@ -100,25 +100,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Insert booking
             $stmt = $conn->prepare("
-                INSERT INTO bookings
-                    (user_id, booking_type, booking_ref, total_amount, discount_amount,
-                     final_amount, payment_status, booking_status, check_in, check_out, notes)
-                VALUES (?, 'hotel', ?, ?, 0, ?, 'pending', 'pending', ?, ?, ?)
-            ");
-            $stmt->bind_param('isddss s', $user_id, $ref, $total, $total, $check_in, $check_out, $notes);
-            $stmt->bind_param('isddssss', $user_id, $ref, $total, $total, $check_in, $check_out, $notes, $notes);
-
-            // Fix bind
-            $stmt->close();
-            $stmt = $conn->prepare("
-                INSERT INTO bookings
-                    (user_id, booking_type, booking_ref, total_amount, final_amount,
-                     payment_status, booking_status, check_in, check_out, notes)
-                VALUES (?, 'hotel', ?, ?, ?, ?, 'pending', ?, ?, ?)
-            ");
-            $pay_status = 'pending';
-            $bk_status  = 'pending';
-            $stmt->bind_param('isddssss', $user_id, $ref, $total, $total, $pay_status, $bk_status, $check_in, $check_out);
+    INSERT INTO bookings
+        (user_id, booking_type, booking_ref, total_amount, final_amount,
+         payment_status, booking_status, check_in, check_out, notes)
+    VALUES (?, 'hotel', ?, ?, ?, 'pending', 'pending', ?, ?, ?)
+");
+            $stmt->bind_param('isddsss', $user_id, $ref, $total, $total, $check_in, $check_out, $notes);
             $stmt->execute();
             $booking_id = $conn->insert_id;
             $stmt->close();
@@ -191,14 +178,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 set_flash('success', 'Booking confirmed! Reference: ' . $ref);
                 redirect("modules/hotels/invoice.php?booking_id=$booking_id");
-
             } else {
                 // Stripe simulation — store booking_id in session for payment page
                 $conn->commit();
                 $_SESSION['pending_booking_id'] = $booking_id;
                 redirect("payments/checkout.php?booking_id=$booking_id&gateway=$payment_method");
             }
-
         } catch (Exception $e) {
             $conn->rollback();
             $errors[] = 'Booking failed: ' . $e->getMessage();
@@ -216,9 +201,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <?php if (!empty($errors)): ?>
-        <div class="alert alert-danger">
-            <?php foreach ($errors as $e): ?><div><?= htmlspecialchars($e) ?></div><?php endforeach; ?>
-        </div>
+            <div class="alert alert-danger">
+                <?php foreach ($errors as $e): ?><div><?= htmlspecialchars($e) ?></div><?php endforeach; ?>
+            </div>
         <?php endif; ?>
 
         <div class="row g-4">
@@ -234,19 +219,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="col-md-6">
                                     <label class="form-label">Check-in Date</label>
                                     <input type="text" class="form-control"
-                                           value="<?= date('d M Y', strtotime($check_in)) ?>" readonly>
+                                        value="<?= date('d M Y', strtotime($check_in)) ?>" readonly>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Check-out Date</label>
                                     <input type="text" class="form-control"
-                                           value="<?= date('d M Y', strtotime($check_out)) ?>" readonly>
+                                        value="<?= date('d M Y', strtotime($check_out)) ?>" readonly>
                                 </div>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">Special Requests (Optional)</label>
                                 <textarea name="notes" class="form-control" rows="3"
-                                          placeholder="e.g. Late check-in, extra pillows..."></textarea>
+                                    placeholder="e.g. Late check-in, extra pillows..."></textarea>
                             </div>
 
                             <hr>
@@ -256,7 +241,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="col-md-4">
                                     <label class="d-block">
                                         <input type="radio" name="payment_method" value="stripe"
-                                               class="d-none payment-radio" checked>
+                                            class="d-none payment-radio" checked>
                                         <div class="card payment-option border-2 border-primary p-3 text-center">
                                             <i class="bi bi-credit-card fs-2 text-primary"></i>
                                             <div class="fw-semibold">Credit Card</div>
@@ -267,7 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="col-md-4">
                                     <label class="d-block">
                                         <input type="radio" name="payment_method" value="razorpay"
-                                               class="d-none payment-radio">
+                                            class="d-none payment-radio">
                                         <div class="card payment-option border p-3 text-center">
                                             <i class="bi bi-phone fs-2 text-success"></i>
                                             <div class="fw-semibold">UPI / Razorpay</div>
@@ -278,7 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="col-md-4">
                                     <label class="d-block">
                                         <input type="radio" name="payment_method" value="wallet"
-                                               class="d-none payment-radio">
+                                            class="d-none payment-radio">
                                         <div class="card payment-option border p-3 text-center">
                                             <i class="bi bi-wallet2 fs-2 text-warning"></i>
                                             <div class="fw-semibold">Wallet</div>
@@ -356,27 +341,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <style>
-.payment-radio:checked + .payment-option {
-    border-color: #0d6efd !important;
-    background: #f0f4ff;
-}
-.payment-option { cursor: pointer; border-radius: 10px; transition: all 0.2s; }
-.payment-option:hover { border-color: #0d6efd !important; }
+    .payment-radio:checked+.payment-option {
+        border-color: #0d6efd !important;
+        background: #f0f4ff;
+    }
+
+    .payment-option {
+        cursor: pointer;
+        border-radius: 10px;
+        transition: all 0.2s;
+    }
+
+    .payment-option:hover {
+        border-color: #0d6efd !important;
+    }
 </style>
 
 <script>
-document.querySelectorAll('.payment-radio').forEach(radio => {
-    radio.addEventListener('change', () => {
-        document.querySelectorAll('.payment-option').forEach(opt => {
-            opt.classList.remove('border-primary');
-            opt.classList.add('border');
+    document.querySelectorAll('.payment-radio').forEach(radio => {
+        radio.addEventListener('change', () => {
+            document.querySelectorAll('.payment-option').forEach(opt => {
+                opt.classList.remove('border-primary');
+                opt.classList.add('border');
+            });
+            if (radio.checked) {
+                radio.nextElementSibling.classList.add('border-primary');
+                radio.nextElementSibling.classList.remove('border');
+            }
         });
-        if (radio.checked) {
-            radio.nextElementSibling.classList.add('border-primary');
-            radio.nextElementSibling.classList.remove('border');
-        }
     });
-});
 </script>
 
 <?php include __DIR__ . '/../../includes/footer.php'; ?>

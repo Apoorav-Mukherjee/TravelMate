@@ -72,6 +72,8 @@ $total_bookings = $conn->query("SELECT COUNT(*) FROM bookings WHERE payment_stat
 <!-- Hero Section -->
 <div style="background:linear-gradient(135deg,#1a1f3a 0%,#0d6efd 100%);
             min-height:500px;display:flex;align-items:center">
+    <!-- <div style="background:url('https://images.unsplash.com/photo-1519451241324-20b4ea2c4220?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center/cover;
+                min-height:500px;display:flex;align-items:center"> -->
     <div class="container py-5">
         <div class="row align-items-center">
             <div class="col-lg-6 text-white">
@@ -94,7 +96,7 @@ $total_bookings = $conn->query("SELECT COUNT(*) FROM bookings WHERE payment_stat
                 </div>
             </div>
             <div class="col-lg-6 d-none d-lg-block text-center">
-                <div style="font-size:10rem;opacity:0.15">✈️</div>
+                <div style="font-size:10rem;opacity:0.5">✈️</div>
             </div>
         </div>
 

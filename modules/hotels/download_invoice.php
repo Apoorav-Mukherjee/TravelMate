@@ -1,6 +1,9 @@
 <?php
+ob_start();
+require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/header.php';
 require_role('traveler');
+ob_end_clean(); // discard any accidental output before PDF streams
 require_once __DIR__ . '/../../includes/tcpdf/tcpdf.php';
 
 $booking_id = (int)($_GET['booking_id'] ?? 0);
